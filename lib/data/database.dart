@@ -21,6 +21,8 @@ mixin SyncColumns on Table {
 class Children extends Table with SyncColumns {
   TextColumn get id => text()();
   TextColumn get name => text().withLength(min: 2, max: 80)();
+  // Drift's documented way to reference a column in its own CHECK constraint.
+  // ignore: recursive_getters
   TextColumn get sex => text().check(sex.isIn(['male', 'female']))();
   DateTimeColumn get dateOfBirth => dateTime()();
   TextColumn get guardianName => text().withLength(min: 2, max: 80)();
@@ -41,6 +43,7 @@ class Measurements extends Table with SyncColumns {
   DateTimeColumn get measuredOn => dateTime()();
   RealColumn get weightKg => real().nullable()();
   RealColumn get heightCm => real().nullable()();
+  // ignore: recursive_getters
   TextColumn get position => text().check(position.isIn(['lying', 'standing']))();
 
   /// Mid-upper arm circumference, a quick wasting screen used alongside weight-for-height.

@@ -3,14 +3,13 @@
 import 'dart:io';
 
 import 'package:drift/drift.dart' show driftRuntimeOptions;
-import 'package:flutter/rendering.dart' show debugDisableShadows;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:growth_monitor/data/database.dart';
 import 'package:growth_monitor/sync/sync_engine.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../test/app_test.dart' show Harness, settle, finish, today;
+import '../test/app_test.dart' show Harness, settle, finish;
 
 Future<void> loadFonts() async {
   final dir = '${Platform.environment['FLUTTER_ROOT'] ?? '/opt/homebrew/share/flutter'}/bin/cache/artifacts/material_fonts';
