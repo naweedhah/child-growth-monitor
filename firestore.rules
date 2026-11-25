@@ -1,0 +1,31 @@
+rules_version = '2';
+
+// Each health worker can only read and write their own caseload, and every write must carry
+// the sync fields the app relies on (a version that increases by exactly one).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/{collection}/{docId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      allow create: if isOwner(uid) && validCollection(collection)
+        && request.resource.data.version == 1;
+
+      allow update: if isOwner(uid) && validCollection(collection)
+        && request.resource.data.version == resource.data.version + 1;
+
+      // Records are never hard-deleted: deletions sync as tombstones (deleted = true).
+      allow delete: if false;
+    }
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid
+        && request.resource.data.updatedBy == uid
+        && request.resource.data.serverUpdatedAt == request.time
+        && request.resource.data.deleted is bool;
+    }
+
+    function validCollection(collection) {
+      return collection in ['children', 'measurements'];
+    }
+  }
+}

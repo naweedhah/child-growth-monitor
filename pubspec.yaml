@@ -1,0 +1,54 @@
+name: growth_monitor
+description: "Offline-first child growth monitoring with WHO z-scores, for public health midwives."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.14.0
+
+dependencies:
+  cloud_firestore: ^7.2.0
+  connectivity_plus: ^7.3.2
+  drift: ^2.35.4
+  drift_flutter: ^0.3.1
+  firebase_auth: ^7.1.0
+  firebase_core: ^5.2.0
+  fl_chart: ^1.3.1
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.5.0
+  go_router: ^18.1.4
+  intl: ^0.20.3
+  material_ui: ^1.1.0
+  path_provider: ^2.1.6
+  uuid: ^4.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.17.1
+  drift_dev: ^2.35.3
+  fake_cloud_firestore: ^4.5.0
+  firebase_auth_mocks: ^0.16.0
+  mocktail: ^1.0.5
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/who/
+
+# path_provider_foundation 2.6 compiles Objective-C through a native-assets build hook that
+# needs a licensed Xcode even for host-side `flutter test`. 2.5.1 uses platform channels and
+# behaves the same at runtime.
+dependency_overrides:
+  path_provider_foundation: 2.5.1
+
+hooks:
+  user_defines:
+    sqlite3:
+      # macOS is only used to run `flutter test` on a Mac; use its system SQLite there so tests
+      # don't need Xcode's lipo. Android and iOS builds keep package:sqlite3's bundled SQLite.
+      source:
+        macos: system
+        default: sqlite3
