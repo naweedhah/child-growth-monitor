@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform, kIsWeb;
 
 /// Firebase configuration.
 ///
@@ -9,10 +10,21 @@ import 'package:firebase_core/firebase_core.dart';
 class DefaultFirebaseOptions {
   static const projectId = 'demo-growth-monitor';
 
-  static FirebaseOptions get currentPlatform => const FirebaseOptions(
-        apiKey: 'demo-api-key',
-        appId: '1:000000000000:android:0000000000000000',
+  static FirebaseOptions get currentPlatform => FirebaseOptions(
+        // Placeholders shaped like real values: the iOS SDK refuses to start with an API key
+        // that is not 39 characters starting with `A`, or an app id whose platform segment is
+        // not `ios`. The emulators never check either.
+        apiKey: 'AIzaDemoKeyForLocalEmulatorOnly00000000',
+        appId: '1:000000000000:${_platformSegment()}:0000000000000000',
         messagingSenderId: '000000000000',
         projectId: projectId,
       );
+
+  static String _platformSegment() {
+    if (kIsWeb) return 'web';
+    return switch (defaultTargetPlatform) {
+      TargetPlatform.iOS || TargetPlatform.macOS => 'ios',
+      _ => 'android',
+    };
+  }
 }
